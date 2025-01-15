@@ -15,7 +15,6 @@ DigitalIn driver_seatbelt(D8);
 DigitalIn passenger_seatbelt(D9);
 
 
-
 DigitalOut good_passenger_LED(LED1);
 DigitalOut ignition(LED2);
 /*
@@ -31,31 +30,34 @@ UnbufferedSerial uartUsb(USBTX, USBRX, 115200);
 //=====[Declarations (prototypes) of public functions]=========================
 
 void inputsInit();
-void outputsInit();
+
 void car();
 void print_to_uart(string);
 
-void part1();
-void part2();
-void part3();
+void run();
 
 //=====[Main function, the program entry point after power on or reset]========
 
+"""
+this is a main 
+"""
 int main()
 {
     inputsInit();
 
-    part1();
-    part2();
-    part3();
+    run();
 }
 
+
+"""
+this declared the inputs
+"""
 void inputsInit()
 {
     driver_occupancy.mode(PullDown);
     passenger_occupancy.mode(PullDown);
-    driver_seatbelt.mode(PullDown);
-    passenger_seatbelt.mode(PullDown);
+    // driver_seatbelt.mode(PullDown);
+    // passenger_seatbelt.mode(PullDown);
 
     ignition_BTN.mode(PullDown);
 
@@ -63,56 +65,33 @@ void inputsInit()
     alarm_buzzer.input();
 }
 
-/*
- When the driver sits down, display the message, “Welcome to enhanced alarm system model 218-W24”.
-Light the green LED only when both seats are occupied and both seatbelts are fastened.
- When the ignition button is pushed:
--        If the green LED is lit, then normal ignition occurs. Light the blue LED and extinguish the green LED. Display the message, “Engine started.”
--        If the green LED is not lit, then ignition is inhibited. Sound the alarm buzzer; display the message, “Ignition inhibited” and display all the reasons why the ignition was inhibited: “Passenger seat not occupied,” “Driver seatbelt not fastened,” etc.
-*/
 
-
-
-
-void part1(){
-    //When the driver sits down, //display the message, “Welcome to enhanced alarm system model 218-W24”.
-
+"""
+it runs
+"""
+void run(){
+    //PART 1
     //while the button is not presseed wait till the button is pressed.
     while (driver_occupancy == OFF){ }
 
+    //display the message, “Welcome to enhanced alarm system model 218-W24”.
     uartUsb.write( "Welcome to enhanced alarm system model 218-W24\r\n", 48 );
 
-}
+    //PART 2
 
-void part2(){
     //Light the green LED only when both seats are occupied and both seatbelts are fastened.
-    if ((driver_occupancy && passenger_occupancy) && (driver_seatbelt && passenger_seatbelt)){
-        good_passenger_LED = ON;
-    } else {
-        good_passenger_LED = OFF;
-    }
-}
-
-
-// When the ignition button is pushed:
-
-//  If the green LED is lit, 
-//      then normal ignition occurs. 
-//      Light the blue LED and extinguish the green LED. 
-//      Display the message, “Engine started.”
-
-// If the green LED is not lit, 
-//      then ignition is inhibited. 
-//      Sound the alarm buzzer; 
-//      display the message, “Ignition inhibited” 
-//      and display all the reasons why the ignition was inhibited: 
-//              “Passenger seat not occupied,” “Driver seatbelt not fastened,” etc.
-void part3(){
-    while (ignition_BTN == OFF){
-        //None
+    while (ignition_BTN == OFF){ 
+        if ((driver_occupancy && passenger_occupancy) && (driver_seatbelt && passenger_seatbelt)){
+            good_passenger_LED = ON;
+        } else {
+            good_passenger_LED = OFF;
+        }
     }
 
-    if (good_passenger_LED == ON){
+    //PART 3
+
+    if (good_passenger_LED = ON){
+
         //normal ignition occurs. 
         ignition = ON;
 
@@ -122,19 +101,15 @@ void part3(){
         //Display the message, “Engine started.”  
         uartUsb.write( "Engine started.\r\n", 15+2);
 
-
-
     } else {
 
-
-//      Sound the alarm buzzer; 
+        // Sound the alarm buzzer; 
         alarm_buzzer.output(); 
 
-//      display the message, “Ignition inhibited” 
+        // display the message, “Ignition inhibited” 
         uartUsb.write( "Ignition inhibited\r\n", 18+2);
-//      and display all the reasons why the ignition was inhibited: 
 
-
+        // and display all the reasons why the ignition was inhibited: 
         if (!driver_occupancy){// driver_occupancy
             uartUsb.write( "Driver seat not occupied\r\n", 19+6+2);
 
